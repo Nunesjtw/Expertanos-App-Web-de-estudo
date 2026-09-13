@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espartanos Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+    <div class="crown-row">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 8L7 11L12 4L17 11L21 8L19 18H5L3 8Z" stroke="#d4af6a" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <div class="brand">
+            <h1>Espartanos Study</h1>
+            <p>Transformar o estudo em uma competição do usuário consigo mesmo e com a comunidade.</p>
+        </div>
+    </div>
+
+    <!-- HERO / GAMIFICATION HEADER -->
+    <div class="hero">
+        <div class="hero-top">
+            <div class="level-block">
+                <div class="level-badge" id="level-number">1</div>
+                <div>
+                    <p class="level-title" id="level-title">Aprendiz</p>
+                    <p class="level-sub" id="xp-sub">0 / 100 XP</p>
+                </div>
+            </div>
+            <div class="streak-pill">
+                🔥 <span class="n" id="streak-count">0</span> dia(s) de sequência
+            </div>
+        </div>
+
+        <div class="bars">
+            <div>
+                <div class="bar-label"><span>Experiência</span><b id="xp-label">0 / 100 XP</b></div>
+                <div class="track"><div class="fill xp" id="xp-fill" style="width:0%"></div></div>
+            </div>
+            <div>
+                <div class="bar-label"><span>Meta diária de estudo</span><b id="goal-label">0h / 3h</b></div>
+                <div class="track"><div class="fill goal" id="goal-fill" style="width:0%"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="grid">
+        <!-- LEFT COLUMN -->
+        <div class="col">
+            <!-- Pomodoro -->
+            <div class="card pomodoro">
+                <h2>Cronômetro de foco</h2>
+                <p class="hint">25 minutos de foco total valem +25 XP. Saia da aba e o relógio para na hora.</p>
+
+                <div class="mode-toggle">
+                    <button id="mode-focus-btn" class="active">Foco · 25min</button>
+                    <button id="mode-break-btn">Pausa · 5min</button>
+                </div>
+
+                <div class="timer-ring">
+                    <svg viewBox="0 0 220 220">
+                        <circle class="track-c" cx="110" cy="110" r="100"></circle>
+                        <circle class="prog-c" id="prog-circle" cx="110" cy="110" r="100"></circle>
+                    </svg>
+                    <div class="timer-display">
+                        <div class="time" id="time-display">25:00</div>
+                        <div class="phase" id="phase-display">Pronto para focar</div>
+                    </div>
+                </div>
+
+                <div class="subject-input">
+                    <input type="text" id="subject-field" placeholder="Matéria desta sessão (ex: Matemática)">
+                </div>
+
+                <div class="timer-controls">
+                    <button class="btn btn-primary" id="start-btn">Iniciar</button>
+                    <button class="btn btn-ghost" id="reset-btn">Reiniciar</button>
+                </div>
+
+                <p class="cycle-count" id="cycle-count">0 ciclos de foco concluídos hoje</p>
+            </div>
+
+            <!-- To-do -->
+            <div class="card">
+                <h2>Tarefas de estudo</h2>
+                <p class="hint">Cada tarefa concluída concede +10 XP.</p>
+
+                <form class="task-form" id="task-form">
+                    <input type="text" id="task-text" placeholder="Nova tarefa (ex: Resolver lista de exercícios)" required>
+                    <input type="number" id="task-pomodoros" min="0" max="20" value="1" title="Pomodoros estimados">
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </form>
+
+                <ul class="task-list" id="task-list"></ul>
+                <p class="empty-note" id="empty-note" style="display:none;">Nenhuma tarefa ainda — adicione a primeira acima.</p>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col">
+            <!-- Leaderboard -->
+            <div class="card">
+                <h2>Ranking global</h2>
+                <p class="hint">Ordenado por XP acumulado. Atualiza em tempo real.</p>
+                <div id="leaderboard-list"></div>
+            </div>
+
+            <!-- Stats -->
+            <div class="card">
+                <h2>Resumo da semana</h2>
+                <p class="hint">Reinicia a cada nova semana.</p>
+                <div class="stat-row">
+                    <span class="stat-label">Horas estudadas</span>
+                    <span class="stat-value" id="stat-hours">0h 0min</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Matéria mais estudada</span>
+                    <span class="stat-value" id="stat-subject">—</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Tarefas concluídas</span>
+                    <span class="stat-value" id="stat-tasks">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>Espartanos Study · MVP local, seus dados ficam salvos apenas neste navegador.</footer>
+</div>
+
+<!-- Toast layer for instant XP feedback -->
+<div id="toast-layer"></div>
+
+<!-- Anti-distraction modal -->
+<div class="modal-backdrop" id="distraction-modal">
+    <div class="modal">
+        <div class="icon">⚔️</div>
+        <h3>Sessão pausada!</h3>
+        <p>Você saiu do app. Volte para continuar focado!</p>
+        <button class="btn btn-gold" id="resume-btn">Retomar o foco</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
